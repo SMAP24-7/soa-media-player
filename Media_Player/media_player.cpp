@@ -7,6 +7,7 @@ Media_Player::Media_Player(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    //Controla los errores de vídeo
     connect(player, static_cast<void(QMediaPlayer::*)(QMediaPlayer::Error)>(&QMediaPlayer::error),
         [=](QMediaPlayer::Error error){
 
@@ -32,6 +33,17 @@ Media_Player::Media_Player(QWidget *parent) :
         }
 
 
+    });
+
+    //Controla los errores de la cámaera
+    connect(camera, static_cast<void(QCamera::*)(QCamera::Error)>(&QCamera::error),
+        [=](QCamera::Error error){
+        if (error != 0){
+            Qmessageerror.critical(0,"Error","No se puede iniciar la WebCam");
+            Qmessageerror.setFixedSize(500,200);
+            camera->stop();
+            camera->unload();
+        }
     });
     /*
     connect(o, &QMediaPlayer::error, [](QMediaPlayer::Error a) {
